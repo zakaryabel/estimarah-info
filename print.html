@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>استمارة معلومات - للطباعة</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      direction: rtl;
+      padding: 40px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .header img {
+      position: absolute;
+      width: 80px;
+      top: 0;
+    }
+    .header .left-logo { left: 0; }
+    .header .right-logo { right: 0; }
+    .section {
+      margin-bottom: 15px;
+    }
+    .label {
+      display: inline-block;
+      width: 250px;
+      font-weight: bold;
+    }
+    .value {
+      display: inline-block;
+      border-bottom: 1px solid #000;
+      min-width: 200px;
+      padding: 2px 5px;
+    }
+    .footer {
+      margin-top: 40px;
+      font-size: 14px;
+    }
+    .signature {
+      margin-top: 50px;
+      text-align: left;
+    }
+    @media print {
+      button { display: none; }
+    }
+  </style>
+</head>
+<body onload="fillData(); setTimeout(() => { window.print(); downloadPDF(); }, 1000);">
+
+  <div class="header">
+    <img src="logo-dz.png" class="left-logo" />
+    <img src="logo-dz.png" class="right-logo" />
+    <h3>الجمهورية الجزائرية الديمقراطية الشعبية</h3>
+    <h4>وزارة التربية الوطنية</h4>
+    <p>فرع الديوان الوطني للامتحانات والمسابقات – أم البواقي</p>
+    <p>رمز المركز: 34301 – مركز التصحيح: ثانوية سليمان بن طوبال – ميلة</p>
+    <h3>استمارة معلومات</h3>
+  </div>
+
+  <div class="section"><span class="label">اللقب:</span><span class="value" id="lastName"></span></div>
+  <div class="section"><span class="label">الاسم:</span><span class="value" id="firstName"></span></div>
+  <div class="section"><span class="label">اللقب والاسم بالحروف اللاتينية:</span><span class="value" id="latinName"></span></div>
+  <div class="section"><span class="label">مكان الازدياد:</span><span class="value" id="birthPlace"></span><span class="label">تاريخ الازدياد:</span><span class="value" id="birthdate"></span></div>
+  <div class="section"><span class="label">الرتبة:</span><span class="value" id="grade"></span></div>
+  <div class="section"><span class="label">مؤسسة العمل:</span><span class="value" id="workInstitution"></span></div>
+  <div class="section"><span class="label">المادة:</span><span class="value" id="subject"></span><span class="label">الوظيفة في المركز:</span><span class="value" id="centerJob"></span></div>
+  <div class="section"><span class="label">رقم الحساب البريدي الجاري:</span><span class="value" id="ccpNumber"></span><span class="label">المفتاح:</span><span class="value" id="key"></span></div>
+
+  <div class="footer">
+    <p>أنا الممضي(ة) أسفله أصرح بشرفي أن المعلومات المقدمة أعلاه صحيحة.</p>
+    <p>حرر بميلة في <span id="todayDate"></span></p>
+    <div class="signature">
+      <p>إمضاء المعني(ة)</p>
+    </div>
+  </div>
+
+  <script>
+    function fillData() {
+      const data = JSON.parse(localStorage.getItem("formData"));
+      if (!data) {
+        alert("لا توجد بيانات محفوظة! الرجاء الرجوع إلى النموذج.");
+        window.location.href = "form.html";
+      }
+      for (const key in data) {
+        const el = document.getElementById(key);
+        if (el) el.textContent = data[key];
+      }
+      const today = new Date();
+      const formatted = today.getDate().toString().padStart(2, '0') + '/' +
+                        (today.getMonth() + 1).toString().padStart(2, '0') + '/' +
+                        today.getFullYear();
+      document.getElementById("todayDate").textContent = formatted;
+    }
+
+    function downloadPDF() {
+      window.print(); // will trigger print dialog
+    }
+  </script>
+
+</body>
+</html>

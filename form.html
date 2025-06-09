@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>استمارة المعلومات</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      direction: rtl;
+      background-color: #f5f5f5;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      max-width: 800px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: green;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #confirmation {
+      text-align: center;
+      margin-top: 30px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="form-container">
+    <h2>استمارة المعلومات</h2>
+    <form id="infoForm">
+      <label>اللقب:</label>
+      <input type="text" name="lastName" required>
+
+      <label>الاسم:</label>
+      <input type="text" name="firstName" required>
+
+      <label>الاسم واللقب باللاتينية:</label>
+      <input type="text" name="latinName" pattern="[A-Za-z ]+" required>
+
+      <label>تاريخ الازدياد:</label>
+      <input type="date" name="birthdate" required>
+
+      <label>مكان الازدياد:</label>
+      <input type="text" name="birthPlace" required>
+
+      <label>الرتبة:</label>
+      <input type="text" name="grade" required>
+
+      <label>مؤسسة العمل:</label>
+      <input type="text" name="workInstitution" required>
+
+      <label>الوظيفة في المركز:</label>
+      <input type="text" name="centerJob" required>
+
+      <label>المادة:</label>
+      <input type="text" name="subject" required>
+
+      <label>رقم الحساب البريدي الجاري:</label>
+      <input type="text" name="ccpNumber" pattern="\d{5,20}" required>
+
+      <label>المفتاح:</label>
+      <input type="text" name="key" pattern="\d{2}" required>
+
+      <button type="submit">إرسال</button>
+    </form>
+  </div>
+
+  <div id="confirmation">
+    <h3>✅ تم إرسال المعلومات بنجاح</h3>
+    <button onclick="editForm()">تعديل المعلومات</button>
+    <button onclick="printForm()">متابعة لطباعة الوثيقة</button>
+  </div>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycby_iWd2Mk0Yg_5h5qcSpL4b0Xtr2KiSWmdmNEbbJ2Wnkz8G5Icyc5ELDpGi6VPo-_my/exec";
+    const form = document.forms['infoForm'];
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      localStorage.setItem("formData", JSON.stringify(data)); // حفظ البيانات للطباعة
+      fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(response => {
+        document.getElementById("form-container").style.display = "none";
+        document.getElementById("confirmation").style.display = "block";
+      })
+      .catch(error => alert("حدث خطأ أثناء الإرسال!"));
+    });
+
+    function editForm() {
+      document.getElementById("confirmation").style.display = "none";
+      document.getElementById("form-container").style.display = "block";
+      const saved = JSON.parse(localStorage.getItem("formData"));
+      for (let key in saved) {
+        form.elements[key].value = saved[key];
+      }
+    }
+
+    function printForm() {
+      window.location.href = "print.html";
+    }
+  </script>
+</body>
+</html>
