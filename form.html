@@ -103,10 +103,11 @@
       const data = Object.fromEntries(new FormData(form).entries());
       localStorage.setItem("formData", JSON.stringify(data)); // حفظ البيانات للطباعة
       fetch(scriptURL, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' }
-      })
+  method: 'POST',
+  mode: 'no-cors', // هذا هو الأهم
+  body: JSON.stringify(data)
+})
+
       .then(response => {
         document.getElementById("form-container").style.display = "none";
         document.getElementById("confirmation").style.display = "block";
